@@ -1,3 +1,7 @@
+# Fast Track Transfer Initiation Process
+
+![Fasttrack Transfer Initiation Process](./fasttrack-transfer.png)
+
 # Purpose
 
 To reduce complexity for the registrant while increasing security by allowing the auth token to be distributed system-to-system instead of via the end user.
