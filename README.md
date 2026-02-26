@@ -18,6 +18,8 @@ The existing model, where the registrant receives and shares the token themselve
 
 ## User Flow (From the Registrant’s Perspective)
 
+![Fast Track Transfer Initiation Process](./fast-track-transfer-concept.png)
+
 1. The registrant logs into Punktum dk’s self-service portal.
 2. The registrant selects **“Transfer domain to registrar”**.
 3. The registrant selects a registrar from a list of approved registrars.
