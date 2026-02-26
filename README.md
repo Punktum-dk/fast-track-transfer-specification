@@ -1,5 +1,3 @@
-![Punktum dk Logo][DKHMLOGO]
-
 # Fast Track Transfer Initiation Process
 
 ## Introduction
