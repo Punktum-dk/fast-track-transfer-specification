@@ -112,6 +112,7 @@ Below is an example of a fast-track transfer request supporting multiple domains
     }
   ]
 }
+```
 
 ## Registrar Response
 
