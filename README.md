@@ -45,13 +45,72 @@ Once the registrant has provided consent, Punktum dk performs a backend call to 
 - Registrant reference  
 - Contact information (in accordance with consent)  
 - Timestamp of consent  
-- Signature from Punktum dk  
 
 In this model, the auth token will be:
 
 - Short-lived  
-- One-time use or scope-bound to the specific transfer  
-- Invalid outside this context  
+
+Below is an example of a fast-track transfer request supporting multiple domains for a single contact. Each domain includes its own auth token.
+
+{
+  "contact": {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "phone": "+4512345678",
+    "address": {
+      "street": "Example Street 12",
+      "zip": "2100",
+      "city": "Copenhagen",
+      "country": "DK"
+    }
+  },
+  "consent": {
+    "granted_at": "2026-04-17T11:55:00Z",
+    "ip_address": "203.0.113.42"
+  },
+  "domains": [
+    {
+      "domain_name": "example.dk",
+      "auth_token": {
+        "value": "token-domain-1",
+        "expires_at": "2026-04-17T12:00:00Z",
+        "scope": "transfer"
+      }
+    },
+    {
+      "domain_name": "example2.dk",
+      "auth_token": {
+        "value": "token-domain-2",
+        "expires_at": "2026-04-17T12:00:00Z",
+        "scope": "transfer"
+      }
+    },
+    {
+      "domain_name": "example3.dk",
+      "auth_token": {
+        "value": "token-domain-3",
+        "expires_at": "2026-04-17T12:05:00Z",
+        "scope": "transfer"
+      }
+    },
+    {
+      "domain_name": "example4.dk",
+      "auth_token": {
+        "value": "token-domain-4",
+        "expires_at": "2026-04-17T12:10:00Z",
+        "scope": "transfer"
+      }
+    },
+    {
+      "domain_name": "example5.dk",
+      "auth_token": {
+        "value": "token-domain-5",
+        "expires_at": "2026-04-17T12:15:00Z",
+        "scope": "transfer"
+      }
+    }
+  ]
+}
 
 ## Registrar Response
 
