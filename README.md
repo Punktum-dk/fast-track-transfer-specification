@@ -52,6 +52,7 @@ In this model, the auth token will be:
 
 Below is an example of a fast-track transfer request supporting multiple domains for a single contact. Each domain includes its own auth token.
 
+```json
 {
   "contact": {
     "name": "Jane Doe",
