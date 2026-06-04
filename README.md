@@ -38,7 +38,10 @@ The existing model, where the registrant receives and shares the token themselve
 
 Once the registrant has provided consent, Punktum dk performs a backend call to the registrar’s fast track endpoint.
 
-### Example Payload (Illustrative)
+### API key
+If the registrar defines API key to use in Fast Track transfer configuration, this will be passed as X-API-KEY header in the request.
+
+### Example Payload
 
 - Domain name  
 - Auth token (short-lived and tied to this specific transfer intention)  
@@ -118,10 +121,17 @@ Below is an example of a fast-track transfer request supporting multiple domains
 
 The registrar confirms receipt and returns a unique link representing a created transfer session at the registrar.
 
-### Example Response
+- Use standard HTTP headers to communicate status (200 for OK and 4xx and 5xx for errors)
+- Required transfer_session_url containing link to transfer flow at registrar
+- Optional expires_at timestamp Punktum dk can display to the registrant when the link will expire
 
-- Status (accepted / rejected)  
-- `TransferSessionURL` (one-time link)  
+### Example Response
+```json
+{
+  "transfer_session_url": "https://example.dk/transfer/session/e125dec7170048378528a664a1c25d1b",
+  "expires_at": "2026-04-17T12:15:00Z"
+}
+```
 
 Punktum dk then presents this link to the registrant in the self-service portal, allowing the registrant to continue directly in the registrar’s transfer flow.
 
@@ -136,9 +146,8 @@ Punktum dk remains a neutral party and solely facilitates the technical initiati
 Registrars wishing to participate must, via the registrar portal:
 
 - Enable **“Fast Track Transfer”**
-- Provide a technical endpoint for receiving transfer intents
-- Register required security information (e.g., keys/certificates)
-- Specify any timeout and handling rules
+- Provide endpoint URL for receiving transfer initialization
+- Provide API key if required when calling registrar endpoint
 
 Only registrars that have actively opted in will be displayed as fast track–supporting in the self-service portal.
 
