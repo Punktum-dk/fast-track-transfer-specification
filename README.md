@@ -131,7 +131,7 @@ The registrar confirms receipt and returns a unique link representing a created 
 }
 ```
 
-Punktum dk then presents this link to the registrant in the self-service portal, allowing the registrant to continue directly in the registrar’s transfer flow.
+Using the received information Punktum dk redirects the registrant from the self-service portal to the provided url allowing the registrant to continue directly in the registrar’s transfer flow.
 
 ## Security Considerations
 
