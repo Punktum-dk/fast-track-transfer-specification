@@ -123,13 +123,11 @@ The registrar confirms receipt and returns a unique link representing a created 
 
 - Use standard HTTP headers to communicate status (200 for OK and 4xx and 5xx for errors)
 - Required transfer_session_url containing link to transfer flow at registrar
-- Optional expires_at timestamp Punktum dk can display to the registrant when the link will expire
 
 ### Example Response
 ```json
 {
-  "transfer_session_url": "https://example.dk/transfer/session/e125dec7170048378528a664a1c25d1b",
-  "expires_at": "2026-04-17T12:15:00Z"
+  "transfer_session_url": "https://example.dk/transfer/session/e125dec7170048378528a664a1c25d1b"
 }
 ```
 
