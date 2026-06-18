@@ -58,6 +58,7 @@ Below is an example of a fast-track transfer request supporting multiple domains
 ```json
 {
   "contact": {
+    "id": "DK123-DK"
     "name": "Jane Doe",
     "email": "jane.doe@example.com",
     "phone": "+4512345678",
@@ -66,7 +67,10 @@ Below is an example of a fast-track transfer request supporting multiple domains
       "zip": "2100",
       "city": "Copenhagen",
       "country": "DK"
-    }
+    },
+    "type": "company",
+    "vat_number": "DK12345678",
+    "p_number": "1001234567"
   },
   "consent": {
     "granted_at": "2026-04-17T11:55:00Z",
