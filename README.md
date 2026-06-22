@@ -58,6 +58,7 @@ Below is an example of a fast-track transfer request supporting multiple domains
 ```json
 {
   "contact": {
+    "id": "ABCD1234-DK",
     "name": "Jane Doe",
     "email": "jane.doe@example.com",
     "phone": "+4512345678",
@@ -66,7 +67,10 @@ Below is an example of a fast-track transfer request supporting multiple domains
       "zip": "2100",
       "city": "Copenhagen",
       "country": "DK"
-    }
+    },
+    "type": "individual",
+    "vat_number": "DK123456789",
+    "p_number": "123456789"
   },
   "consent": {
     "granted_at": "2026-04-17T11:55:00Z",
@@ -94,22 +98,6 @@ Below is an example of a fast-track transfer request supporting multiple domains
       "auth_token": {
         "value": "token-domain-3",
         "expires_at": "2026-04-17T12:05:00Z",
-        "scope": "transfer"
-      }
-    },
-    {
-      "domain_name": "example4.dk",
-      "auth_token": {
-        "value": "token-domain-4",
-        "expires_at": "2026-04-17T12:10:00Z",
-        "scope": "transfer"
-      }
-    },
-    {
-      "domain_name": "example5.dk",
-      "auth_token": {
-        "value": "token-domain-5",
-        "expires_at": "2026-04-17T12:15:00Z",
         "scope": "transfer"
       }
     }
