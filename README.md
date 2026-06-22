@@ -8,6 +8,8 @@ The model does not change the transfer rules themselves, but rather the way the 
 
 ## Document History
 
+22-06-2026 Clarified purpose of contact element and contact cloning behaviour during transfer
+
 22-06-2026 Added payload fields table with contact type enum values and examples for individual and company registrants
 
 26-02-2026 Initial draft version published
@@ -54,6 +56,8 @@ If the registrar defines API key to use in Fast Track transfer configuration, th
 In this model, the auth token will be:
 
 - Short-lived  
+
+The `contact` element contains the information of the current registrant of the domain as registered at Punktum dk. It is intended to help the registrar identify and match the registrant against an existing user in their own system, reducing the need for the registrant to re-enter their details during the transfer flow. If no existing contact handle is specified in the subsequent EPP transfer command issued from the registrar to the registry, Punktum dk will automatically clone the complete contact dataset and assign it a new contact ID.
 
 #### Payload Fields
 
