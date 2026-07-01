@@ -2,27 +2,35 @@
 
 ## Introduction
 
-To reduce complexity for the registrant while increasing security by allowing the auth token to be distributed system-to-system instead of via the end user.
+To reduce complexity for the registrant while increasing security by allowing the auth token
+to be distributed system-to-system instead of via the end user.
 
-The model does not change the transfer rules themselves, but rather the way the transfer is initiated.
+The model does not change the transfer rules themselves, but rather the way the transfer is
+initiated.
 
 ## Document History
 
+01-07-2026 Added error response codes and example error response
+
 22-06-2026 Clarified purpose of contact element and contact cloning behaviour during transfer
 
-22-06-2026 Added payload fields table with contact type enum values and examples for individual and company registrants
+22-06-2026 Added payload fields table with contact type enum values and examples for
+individual and company registrants
 
 26-02-2026 Initial draft version published
 
 ## Overall Principle
 
-The auth token is treated as a technical authorization artifact that Punktum dk can securely transport on behalf of an authenticated registrant, rather than requiring the token to be handled manually by the user.
+The auth token is treated as a technical authorization artifact that Punktum dk can securely
+transport on behalf of an authenticated registrant, rather than requiring the token to be
+handled manually by the user.
 
-The existing model, where the registrant receives and shares the token themselves, is retained as a fallback.
+The existing model, where the registrant receives and shares the token themselves, is retained
+as a fallback.
 
 ## User Flow (From the Registrant's Perspective)
 
-![Fast Track Transfer Initiation Process](./fast-track-transfer-concept.png)
+![Fast Track Transfer Initiation Process](fast-track-transfer-concept.png)
 
 1. The registrant logs into Punktum dk's self-service portal.
 2. The registrant selects **"Transfer domain to registrar"**.
@@ -31,33 +39,38 @@ The existing model, where the registrant receives and shares the token themselve
    - Contact the registrar manually using the auth token (classic model), or
    - Request Punktum dk to initiate the transfer directly with the registrar (fast track).
 5. If fast track is selected, the registrant provides consent for Punktum dk to share:
-   - Domain name  
-   - Auth token  
-   - Relevant contact information  
+   - Domain name
+   - Auth token
+   - Relevant contact information
 
    with the selected registrar for the purpose of initiating the transfer process.
 
-
 ## Technical Interaction (Punktum dk → Registrar)
 
-Once the registrant has provided consent, Punktum dk performs a backend call to the registrar's fast track endpoint.
+Once the registrant has provided consent, Punktum dk performs a backend call to the
+registrar's fast track endpoint.
 
-### API key
-If the registrar defines API key to use in Fast Track transfer configuration, this will be passed as X-API-KEY header in the request.
+### API Key
+
+If the registrar defines an API key to use in the Fast Track transfer configuration, this
+will be passed as the `X-API-KEY` header in the request.
 
 ### Example Payload
 
-- Domain name  
-- Auth token (short-lived and tied to this specific transfer intention)  
-- Registrant reference  
-- Contact information (in accordance with consent)  
-- Timestamp of consent  
+- Domain name
+- Auth token (short-lived and tied to this specific transfer intention)
+- Registrant reference
+- Contact information (in accordance with consent)
+- Timestamp of consent
 
-In this model, the auth token will be:
+In this model, the auth token will be short-lived.
 
-- Short-lived  
-
-The `contact` element contains the information of the current registrant of the domain as registered at Punktum dk. It is intended to help the registrar identify and match the registrant against an existing user in their own system, reducing the need for the registrant to re-enter their details during the transfer flow. If no existing contact handle is specified in the subsequent EPP transfer command issued from the registrar to the registry, Punktum dk will automatically clone the complete contact dataset and assign it a new contact ID.
+The `contact` element contains the information of the current registrant of the domain as
+registered at Punktum dk. It is intended to help the registrar identify and match the
+registrant against an existing user in their own system, reducing the need for the registrant
+to re-enter their details during the transfer flow. If no existing contact handle is specified
+in the subsequent EPP transfer command issued from the registrar to the registry, Punktum dk
+will automatically clone the complete contact dataset and assign it a new contact ID.
 
 #### Payload Fields
 
@@ -171,36 +184,70 @@ The `contact` element contains the information of the current registrant of the 
 
 ## Registrar Response
 
-The registrar confirms receipt and returns a unique link representing a created transfer session at the registrar.
+The registrar confirms receipt and returns a unique link representing a created transfer
+session at the registrar.
 
-- Use standard HTTP headers to communicate status (200 for OK and 4xx and 5xx for errors)
-- Required transfer_session_url containing link to transfer flow at registrar
+- Use standard HTTP status codes to communicate status (`200` for OK, `4xx` and `5xx` for errors)
+- Required `transfer_session_url` containing a link to the transfer flow at the registrar
 
 ### Example Response
+
 ```json
 {
   "transfer_session_url": "https://example.dk/transfer/session/e125dec7170048378528a664a1c25d1b"
 }
 ```
 
-Using the received information Punktum dk redirects the registrant from the self-service portal to the provided url allowing the registrant to continue directly in the registrar's transfer flow.
+Using the received information Punktum dk redirects the registrant from the self-service
+portal to the provided URL, allowing the registrant to continue directly in the registrar's
+transfer flow.
+
+### Error Responses
+
+Punktum dk supports the following HTTP status codes returned by the registrar endpoint:
+
+| HTTP Code | Description |
+|-----------|-------------|
+| `401 Unauthorized` | The registrar rejects the call because the `X-API-KEY` header is missing or invalid, which is required per the Fast Track configuration. |
+| `404 Not Found` | The registrar's endpoint does not exist or has been retired. This may occur if the configured endpoint URL in the registrar portal is incorrect or no longer active. |
+| `408 Request Timeout` | The registrar's endpoint does not respond within a reasonable time. |
+| `409 Conflict` | The registrar rejects the request due to a resource conflict, for example because an active transfer session already exists for one or more of the affected domains. |
+| `422 Unprocessable Entity` | The registrar has received and understood the request but rejects it based on business rules, for example because the contact is registered in a country not supported by the registrar. |
+| `500` / `503` | The registrar's endpoint is down or experiencing an internal error. |
+
+### Example Error Response
+
+The `error` field is required for `4xx` responses. Its value will be displayed directly to
+the registrant in the Punktum dk self-service portal, so it must be written in clear,
+user-friendly language that is meaningful to a non-technical audience.
+
+```json
+{
+  "error": "Contact country not supported"
+}
+```
 
 ## Security Considerations
 
-This model reduces the exposure of auth tokens, as they are not distributed via email or manual copying. The token is transferred exclusively system-to-system between Punktum dk and the registrar.
+This model reduces the exposure of auth tokens, as they are not distributed via email or
+manual copying. The token is transferred exclusively system-to-system between Punktum dk
+and the registrar.
 
-Punktum dk remains a neutral party and solely facilitates the technical initiation of the transfer following the registrant's explicit request.
+Punktum dk remains a neutral party and solely facilitates the technical initiation of the
+transfer following the registrant's explicit request.
 
 ## Requirements for Registrars Supporting Fast Track
 
 Registrars wishing to participate must, via the registrar portal:
 
 - Enable **"Fast Track Transfer"**
-- Provide endpoint URL for receiving transfer initialization
-- Provide API key if required when calling registrar endpoint
+- Provide an endpoint URL for receiving transfer initialization
+- Provide an API key if required when calling the registrar endpoint
 
-Only registrars that have actively opted in will be displayed as fast track–supporting in the self-service portal.
+Only registrars that have actively opted in will be displayed as fast track–supporting in
+the self-service portal.
 
 ## Fallback
 
-If a registrar does not support fast track, the existing model applies, where the registrant receives and shares the auth token manually.
+If a registrar does not support fast track, the existing model applies, where the registrant
+receives and shares the auth token manually.
