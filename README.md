@@ -10,6 +10,8 @@ initiated.
 
 ## Document History
 
+15-09-2026 Added `identity_validation_status` value in payload.
+
 03-07-2026 Corrected `auth_token.scope` value in example payload from `transfer` to `change_registrar`, and clarified auth token validity period as 14 days
 
 01-07-2026 Added error response codes and example error response
@@ -69,10 +71,7 @@ In this model, the auth token will be short-lived.
 
 The `contact` element contains the information of the current registrant of the domain as
 registered at Punktum dk. It is intended to help the registrar identify and match the
-registrant against an existing user in their own system, reducing the need for the registrant
-to re-enter their details during the transfer flow. If no existing contact handle is specified
-in the subsequent EPP transfer command issued from the registrar to the registry, Punktum dk
-will automatically clone the complete contact dataset and assign it a new contact ID.
+registrant against an existing user in their own system.
 
 #### Payload Fields
 
@@ -89,6 +88,7 @@ will automatically clone the complete contact dataset and assign it a new contac
 | `contact.type` | enum | Yes | Type of registrant. Equivalent to `dkhm:userType` in the EPP service specification. Allowed values: `individual`, `company`, `public_organization`, `association` |
 | `contact.vat_number` | string | No | VAT number (CVR). Only applicable for `company`, `public_organization`, and `association`. Included if registered at Punktum dk, otherwise `null` |
 | `contact.p_number` | string | No | Production unit number (P-number). Only applicable for `company`, `public_organization`, and `association`. Included if registered at Punktum dk, otherwise `null` |
+| `contact.identity_validation_status` | enum | Yes | Shows contact validation status. Allowed values: `verified_by_registrar`, `verified_via_eid`, `verified_by_id_documentation`, `approved_after_risk_assessment` and `unverified` |
 | `consent.granted_at` | string (ISO 8601) | Yes | Timestamp when the registrant granted consent |
 | `consent.ip_address` | string | Yes | IP address from which consent was granted |
 | `domains[].domain_name` | string | Yes | The domain name to transfer (e.g. `eksempel.dk`) |
@@ -113,7 +113,8 @@ will automatically clone the complete contact dataset and assign it a new contac
     },
     "type": "individual",
     "vat_number": null,
-    "p_number": null
+    "p_number": null,
+    "identity_validation_status": "verified_via_eid"
   },
   "consent": {
     "granted_at": "2026-04-17T11:55:00Z",
@@ -166,6 +167,7 @@ will automatically clone the complete contact dataset and assign it a new contac
     "type": "company",
     "vat_number": "DK24210375",
     "p_number": "1006410698"
+    "identity_validation_status": "verified_by_registrar"
   },
   "consent": {
     "granted_at": "2026-04-17T11:55:00Z",
